@@ -97,7 +97,6 @@ const InputForm = (): JSX.Element => {
     const mapURL = `${baseUrl}/geojson(${JSON.stringify(
       geoJson,
     )})/${longitude},${latitude},12/500x300?access_token=${accessToken}`;
-    console.log(mapURL);
     updateMapURI(mapURL);
     updateLat(latitude);
     updateLong(longitude);
@@ -120,9 +119,7 @@ const InputForm = (): JSX.Element => {
     requestCameraPermission();
     requestLocationPermission();
     if (route.params !== undefined && isFocussed) {
-      console.log('Renders');
       if (route.params.mapCoordinates !== undefined) {
-        console.log('Calling Function');
         updateMap(
           route.params.mapCoordinates.lat,
           route.params.mapCoordinates.long,
@@ -132,20 +129,23 @@ const InputForm = (): JSX.Element => {
   }, [isFocussed, route.params, updateMap]);
   const addDataToList = () => {
     console.log('addDataToList');
-    if (lat !== undefined && long !== undefined && title !== '') {
+    if (
+      lat !== undefined &&
+      long !== undefined &&
+      title !== '' &&
+      imageURI !== undefined
+    ) {
       navigation.navigate('MyPlaces', {
         infoAdded: {
           geoStats: {lat: lat, long: long},
           title: title,
-          imageUri:
-            'https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fimages%2Fsearch%2Fwolf%2F&psig=AOvVaw2H7op0xPeeUPUzm-vgSm1U&ust=1690034887596000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCOCO99n8n4ADFQAAAAAdAAAAABAE',
+          imageUri: imageURI,
         },
       });
     } else {
       Alert.alert('Error', 'Fill the form to proceed');
     }
   };
-  console.log(mapURI);
   return (
     <InitialStyle>
       <ScrollView contentContainerStyle={styles.scrollContainer}>

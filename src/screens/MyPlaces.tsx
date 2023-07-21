@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import InitialStyle from './intialStyleScreen';
-import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {
   RouteProp,
   useIsFocused,
@@ -11,6 +11,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../types/ScreenTypes';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {MapCoordinates} from '../types/MapTypes';
+import {Colors} from '../Constants/Colors';
 
 export type PlaceType = {
   geoStats: MapCoordinates;
@@ -48,7 +49,7 @@ const MyPlaces = () => {
       },
     });
     if (isFocussed && route.params !== undefined) {
-      if (route.params.infoAdded !== undefined) {
+      if (route.params.infoAdded) {
         console.log(route.params.infoAdded);
         updateData(route.params.infoAdded);
       }
@@ -63,11 +64,24 @@ const MyPlaces = () => {
             <Text style={styles.noInfoTxt}>No places added yet !</Text>
           </View>
         ) : (
-          <View style={styles.emptyContainer}>
+          <View style={styles.root}>
             <FlatList
               data={myPlaces}
-              renderItem={item => {
-                return <Text></Text>;
+              renderItem={itemData => {
+                return (
+                  <View style={styles.dataContainer}>
+                    <Image
+                      source={{uri: itemData.item.imageUri}}
+                      style={styles.imageStyle}
+                    />
+                    <Text style={styles.titleStyle}>
+                      Title: {itemData.item.title}
+                    </Text>
+                  </View>
+                );
+              }}
+              keyExtractor={item => {
+                return item.imageUri + item.title;
               }}
             />
           </View>
@@ -96,5 +110,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'white',
     fontSize: 16,
+  },
+  dataContainer: {
+    flexDirection: 'row',
+    margin: 10,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+  },
+  imageStyle: {
+    width: 80,
+    height: 40,
+    borderRadius: 10,
+  },
+  titleStyle: {
+    fontSize: 16,
+    color: Colors.PRIMARY,
+    margin: 10,
   },
 });
