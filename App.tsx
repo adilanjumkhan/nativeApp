@@ -6,41 +6,48 @@
  */
 
 import React from 'react';
-import {StyleSheet, SafeAreaView, ImageBackground} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import {GradientColors} from './src/Constants/Colors';
+import {Colors} from './src/Constants/Colors';
 import InputForm from './src/screens/FormScreen';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import MapScreen from './src/screens/MapScreen';
+import MyPlaces from './src/screens/MyPlaces';
+
+const Stack = createStackNavigator();
 
 function App(): JSX.Element {
   return (
-    <ImageBackground
-      source={require('./src/asserts/plain.jpg')}
-      resizeMode="cover"
-      imageStyle={styles.imageStyle}
-      style={styles.root}>
-      <LinearGradient
-        colors={[GradientColors.LIGHTER, GradientColors.DARKER]}
-        style={styles.gradientStyles}>
-        <SafeAreaView style={styles.root}>
-          <InputForm />
-        </SafeAreaView>
-      </LinearGradient>
-    </ImageBackground>
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {backgroundColor: 'rgba(255,255,255,1)'},
+          headerTintColor: Colors.PRIMARY,
+          headerTitleStyle: {fontSize: 18},
+        }}>
+        <Stack.Screen
+          name="MyPlaces"
+          component={MyPlaces}
+          options={{
+            title: 'My Places',
+          }}
+        />
+        <Stack.Screen
+          name="Form"
+          component={InputForm}
+          options={{
+            title: 'Input Form',
+          }}
+        />
+        <Stack.Screen
+          name="Map"
+          component={MapScreen}
+          options={{
+            title: 'Map View',
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 export default App;
-
-const styles = StyleSheet.create({
-  gradientStyles: {
-    flex: 1,
-  },
-  imageStyle: {
-    height: '90%',
-    width: '100%',
-    marginVertical: '10%',
-  },
-  root: {
-    flex: 1,
-  },
-});
