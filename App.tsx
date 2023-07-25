@@ -22,7 +22,11 @@ function App(): JSX.Element {
         screenOptions={{
           headerStyle: {backgroundColor: 'rgba(255,255,255,1)'},
           headerTintColor: Colors.PRIMARY,
-          headerTitleStyle: {fontSize: 18},
+          headerTitleStyle: {fontSize: 18, fontFamily: 'Lumanosimo'},
+          headerBackTitleStyle: {
+            fontSize: 12,
+            fontFamily: 'Lumanosimo',
+          },
         }}>
         <Stack.Screen
           name="MyPlaces"

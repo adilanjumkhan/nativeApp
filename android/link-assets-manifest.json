@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/asserts/Fonts/Lumanosimo-Regular.ttf",
+      "sha1": "95a41a2fb91528921b197cc24fee7f4387cd98b4"
+    },
+    {
+      "path": "src/asserts/Fonts/OFL.txt",
+      "sha1": "6feb4aa429d05f14e2a80ed55d6e5b7d147428ab"
+    }
+  ]
+}

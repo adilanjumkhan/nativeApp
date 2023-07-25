@@ -24,8 +24,16 @@ import {
 } from '@react-navigation/native';
 import {RootStackParamList} from '../types/ScreenTypes';
 import InitialStyle from './intialStyleScreen';
+import {Animated} from 'react-native';
+import notifee from '@notifee/react-native';
 
 const InputForm = (): JSX.Element => {
+  const animatedValue = new Animated.Value(0);
+  Animated.timing(animatedValue, {
+    toValue: 1,
+    duration: 0,
+    useNativeDriver: false,
+  }).start();
   const [imageURI, updateImageUri] = useState<string>();
   const [title, updateTitle] = useState<string>('');
   const [mapURI, updateMapURI] = useState<string>();
@@ -55,6 +63,10 @@ const InputForm = (): JSX.Element => {
       updateCameraPermissionStatusTracker(false);
       console.log('Denied Camera permission');
     }
+  };
+
+  const requestNotificationPermission = async () => {
+    await notifee.requestPermission();
   };
 
   const requestLocationPermission = async () => {
@@ -118,6 +130,8 @@ const InputForm = (): JSX.Element => {
   useEffect(() => {
     requestCameraPermission();
     requestLocationPermission();
+    requestNotificationPermission();
+
     if (route.params !== undefined && isFocussed) {
       if (route.params.mapCoordinates !== undefined) {
         updateMap(
@@ -135,6 +149,7 @@ const InputForm = (): JSX.Element => {
       title !== '' &&
       imageURI !== undefined
     ) {
+      createNotificationHandler();
       navigation.navigate('MyPlaces', {
         infoAdded: {
           geoStats: {lat: lat, long: long},
@@ -145,6 +160,25 @@ const InputForm = (): JSX.Element => {
     } else {
       Alert.alert('Error', 'Fill the form to proceed');
     }
+  };
+  const createNotificationHandler = async () => {
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+    // Display a notification
+    await notifee.displayNotification({
+      title: 'Status Update',
+      body: 'Location info has been saved successfully',
+      android: {
+        channelId,
+        smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
+        // pressAction is needed if you want the notification to open the app when pressed
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
   };
   return (
     <InitialStyle>

@@ -30,14 +30,18 @@ const MyPlaces = () => {
   const route: RouteProp<RootStackParamList, 'MyPlaces'> = useRoute();
   const isFocussed = useIsFocused();
 
-  const updateData = useCallback(
-    (newPlace: PlaceType) => {
-      updateMyPlaces(prevPlaces => [...prevPlaces, newPlace]);
-    },
-    [updateMyPlaces],
-  );
+  const updateData = useCallback((newPlace: PlaceType) => {
+    updateMyPlaces(prevPlaces => [...prevPlaces, newPlace]);
+  }, []);
 
   useEffect(() => {
+    const alreadyExist = (newPlace: PlaceType): boolean => {
+      return myPlaces.some(
+        place =>
+          place.title === newPlace.title &&
+          place.imageUri === newPlace.imageUri,
+      );
+    };
     navigation.setOptions({
       // eslint-disable-next-line react/no-unstable-nested-components
       headerRight: ({tintColor}) => {
@@ -50,11 +54,19 @@ const MyPlaces = () => {
     });
     if (isFocussed && route.params !== undefined) {
       if (route.params.infoAdded) {
-        console.log(route.params.infoAdded);
-        updateData(route.params.infoAdded);
+        if (!alreadyExist(route.params.infoAdded)) {
+          updateData(route.params.infoAdded);
+        }
       }
     }
-  }, [isFocussed, navigateToForm, navigation, route.params, updateData]);
+  }, [
+    isFocussed,
+    myPlaces,
+    navigateToForm,
+    navigation,
+    route.params,
+    updateData,
+  ]);
 
   return (
     <InitialStyle>
@@ -64,7 +76,7 @@ const MyPlaces = () => {
             <Text style={styles.noInfoTxt}>No places added yet !</Text>
           </View>
         ) : (
-          <View style={styles.root}>
+          <View style={styles.rootContainer}>
             <FlatList
               data={myPlaces}
               renderItem={itemData => {
@@ -100,6 +112,10 @@ const styles = StyleSheet.create({
   },
   root: {
     flex: 1,
+  },
+  rootContainer: {
+    flex: 1,
+    marginTop: 20,
   },
   emptyContainer: {
     flex: 1,
